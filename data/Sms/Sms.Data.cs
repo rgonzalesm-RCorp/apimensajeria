@@ -13,170 +13,207 @@ namespace ApiMensajeria
         {
             cnx = AppSettings.GetSetting("ConnectionStrings:cnx");
         }
-        public async Task<int> SaveSmsData(string logTransaccionId, SmsSave objSms)
+        public async Task<int> X1(string A1, SmsSave A2)
         {
-            int smsId = 0;
-            LogHelper.GuardarLogTransaccion(logTransaccionId, nombreArchivo, "Inicio metodo: SaveSmsData()", $" ");
+            int A3 = 0;
+            LogHelper.GuardarLogTransaccion(A1, nombreArchivo, "INI X1", $" ");
             try
             {
-                using (IDbConnection db = new SqlConnection(cnx))
+                using (IDbConnection A4 = new SqlConnection(cnx))
                 {
-                    db.Open();
-                    using (var transaccion = db.BeginTransaction())
+                    A4.Open();
+                    using (var A5 = A4.BeginTransaction())
                     {
                         try
                         {
-                            smsId = await db.ExecuteScalarAsync<int>($@"INSERT INTO SMS (EmpreaId, InstanciaId, Mensaje, CodigoUsuario, Documento, TipoSmsId, Caption)VALUES (@EmpreaId, @InstanciaId, @Mensaje, @CodigoUsuario, @Documento, @TipoSmsId, @Caption); SELECT IDENT_CURRENT('SMS')", objSms, transaccion);
-                            transaccion.Commit();
+                            A3 = await A4.ExecuteScalarAsync<int>(
+                                $@"INSERT INTO SMS (EmpreaId, InstanciaId, Mensaje, CodigoUsuario, Documento, TipoSmsId, Caption)
+                                VALUES (@EmpreaId, @InstanciaId, @Mensaje, @CodigoUsuario, @Documento, @TipoSmsId, @Caption);
+                                SELECT IDENT_CURRENT('SMS')", A2, A5);
+                            A5.Commit();
                         }
                         catch (Exception)
                         {
-                            transaccion.Rollback();
-                            smsId = 0;
+                            A5.Rollback();
+                            A3 = 0;
                         }
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception A6)
             {
-                LogHelper.GuardarLogTransaccion(logTransaccionId, nombreArchivo, "Fin metodo: SaveUsuarioData()", $"error: {ex.Message}");
-
-                smsId = 0;
+                LogHelper.GuardarLogTransaccion(A1, nombreArchivo, "FIN", $"ERR:{A6.Message}");
+                A3 = 0;
             }
-            return smsId;
+            return A3;
         }
-        public async Task<int> SaveDestinatarioData(string logTransaccionId, int smsId, int CodigoUsuario, RequestChatSmsDestinatario listaNumero)
+        public async Task<int> X2(string A1, int A2, int A3, RequestChatSmsDestinatario A4)
         {
-            int destinatarioId = 0;
-            LogHelper.GuardarLogTransaccion(logTransaccionId, nombreArchivo, "Inicio metodo: SaveDestinatarioData()", $" ");
+            int A5 = 0;
+            Func<string, string> R = s => new string(s.Reverse().ToArray());
+
+            string L1 = R(")(ataDoiratanitseDevaS :odotem oicinI");
+            string L2 = R(")(ataDoirausUevaS :odotem niF");
+            string L3 = R(" :rorre");
+
+            LogHelper.GuardarLogTransaccion(A1, nombreArchivo, L1, $" ");
             try
             {
-                using (IDbConnection db = new SqlConnection(cnx))
+                using (IDbConnection A6 = new SqlConnection(cnx))
                 {
-                    db.Open();
-                    using (var transaccion = db.BeginTransaction())
+                    A6.Open();
+                    using (var A7 = A6.BeginTransaction())
                     {
                         try
                         {
-                            destinatarioId = await db.ExecuteScalarAsync<int>($@"insert into DESTINATARIO (SmsId, NroTelefono, CodigoUsuario, Nombre) values ({smsId}, @NroTelefono, {CodigoUsuario}, @Nombre); SELECT IDENT_CURRENT('DESTINATARIO')", listaNumero, transaccion);
-                            transaccion.Commit();
+                            A5 = await A6.ExecuteScalarAsync<int>(
+                                $@"insert into DESTINATARIO (SmsId, NroTelefono, CodigoUsuario, Nombre) values ({A2}, @NroTelefono, {A3}, @Nombre); SELECT IDENT_CURRENT('DESTINATARIO')",
+                                A4, A7
+                            );
+                            A7.Commit();
                         }
                         catch (Exception)
                         {
-                            destinatarioId = 0;
-                            transaccion.Rollback();
+                            A5 = 0;
+                            A7.Rollback();
                         }
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception A8)
             {
-                LogHelper.GuardarLogTransaccion(logTransaccionId, nombreArchivo, "Fin metodo: SaveUsuarioData()", $"error: {ex.Message}");
-                destinatarioId = 0;
+                LogHelper.GuardarLogTransaccion(A1, nombreArchivo, L2, $"{L3}{A8.Message}");
+                A5 = 0;
             }
-            return destinatarioId;
+            return A5;
         }
-        public async Task<bool> UpdateDestinatarioData(string logTransaccionId, int destinatarioId, string statusSms, string statusJson, bool cobrar = false)
+        public async Task<bool> X3(string A1, int A2, string A3, string A4, bool A5 = false)
         {
-            bool response = false;
-            LogHelper.GuardarLogTransaccion(logTransaccionId, nombreArchivo, "Inicio metodo: UpdateDestinatarioData()", $" ");
+            bool A6 = false;
+            Func<string, string> R = s => new string(s.Reverse().ToArray());
+
+            string L1 = R(")(ataDoiratanitseDetadpU :odotem oicinI");
+            string L2 = R(")(ataDoirausUevaS :odotem niF");
+            string L3 = R(" :rorre");
+
+            LogHelper.GuardarLogTransaccion(A1, nombreArchivo, L1, $" ");
             try
             {
-                using (IDbConnection db = new SqlConnection(cnx))
+                using (IDbConnection A7 = new SqlConnection(cnx))
                 {
-                    db.Open();
-                    using (var transaccion = db.BeginTransaction())
+                    A7.Open();
+                    using (var A8 = A7.BeginTransaction())
                     {
                         try
                         {
-                            await db.ExecuteScalarAsync<int>($@" UPDATE DESTINATARIO SET StatusSms = '{statusSms}', JsonStatus = '{statusJson}', FechaEnvio = GETDATE(), CounterIntent = ISNULL(CounterIntent, 0)+1, 
-                            Cobrar = {(cobrar ? 1 : 0)} WHERE DestinatarioId = {destinatarioId}", null, transaccion);
-                            transaccion.Commit();
-                            response = true;
+                            await A7.ExecuteScalarAsync<int>(
+                                $@" UPDATE DESTINATARIO 
+                                    SET StatusSms = '{A3}', 
+                                        JsonStatus = '{A4}', 
+                                        FechaEnvio = GETDATE(), 
+                                        CounterIntent = ISNULL(CounterIntent, 0)+1, 
+                                        Cobrar = {(A5 ? 1 : 0)} 
+                                    WHERE DestinatarioId = {A2}", 
+                                null, A8
+                            );
+                            A8.Commit();
+                            A6 = true;
                         }
-                        catch (Exception ex )
+                        catch (Exception A9)
                         {
-                            LogHelper.GuardarLogTransaccion(logTransaccionId, nombreArchivo, "Fin metodo: SaveUsuarioData()", $"error: {ex.Message}");
-
-                            transaccion.Rollback();
+                            LogHelper.GuardarLogTransaccion(A1, nombreArchivo, L2, $"{L3}{A9.Message}");
+                            A8.Rollback();
                         }
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception B1)
             {
-                LogHelper.GuardarLogTransaccion(logTransaccionId, nombreArchivo, "Fin metodo: SaveUsuarioData()", $"error: {ex.Message}");
+                LogHelper.GuardarLogTransaccion(A1, nombreArchivo, L2, $"{L3}{B1.Message}");
             }
-            return response;
+            return A6;
         }
-
-        public List<TipoSms> GetTipoSmsData(string logTransaccionId, int tipoSmsId)
+        public List<TipoSms> X4(string A1, int A2)
         {
-            List<TipoSms> objTipoSms = [];
-            LogHelper.GuardarLogTransaccion(logTransaccionId, nombreArchivo, "Inicio metodo: GetTipoSmsData()", $"tipoSmsId: {tipoSmsId}");
+            List<TipoSms> A3 = [];
+            Func<string, string> R = s => new string(s.Reverse().ToArray());
+
+            string L1 = R(")(ataSmsopiTteG :odotem oicinI");
+            string L2 = R(")(ataSmsopiTteG :odotem niF");
+            string L3 = R(" :rorre");
+
+            LogHelper.GuardarLogTransaccion(A1, nombreArchivo, L1, $"tipoSmsId: {A2}");
             try
             {
-                string query = (tipoSmsId <= 0) ? $@"SELECT * FROM  TIPO_SMS WHERE Estado = 1" : $@"SELECT * FROM  TIPO_SMS WHERE TipoSmsId = {tipoSmsId}";
-                using (var context = new SqlConnection(cnx))
+                string A4 = (A2 <= 0)
+                    ? $@"SELECT * FROM  TIPO_SMS WHERE Estado = 1"
+                    : $@"SELECT * FROM  TIPO_SMS WHERE TipoSmsId = {A2}";
+
+                using (var A5 = new SqlConnection(cnx))
                 {
-                    objTipoSms = context.Query<TipoSms>(query).ToList();
+                    A3 = A5.Query<TipoSms>(A4).ToList();
                 }
             }
-            catch (Exception ex)
+            catch (Exception A6)
             {
-                LogHelper.GuardarLogTransaccion(logTransaccionId, nombreArchivo, "Fin metodo: GetTipoSmsData()", $"error: {ex.Message}");
-                objTipoSms = [];
+                LogHelper.GuardarLogTransaccion(A1, nombreArchivo, L2, $"{L3}{A6.Message}");
+                A3 = [];
             }
-            return objTipoSms;
+            return A3;
         }
-
-        public List<MensajeDto> GetMensajesData(string logTransaccionId)
+        public List<MensajeDto> X5(string A1)
         {
-            List<MensajeDto> mensajes = [];
-            LogHelper.GuardarLogTransaccion(logTransaccionId, nombreArchivo, "Inicio metodo: GetMensajesData()", $"");
+            List<MensajeDto> A2 = [];
+            Func<string, string> R = s => new string(s.Reverse().ToArray());
+
+            string L1 = R(")(ataDsajesneMteG :odotem oicinI");
+            string L2 = R(")(ataDsajesneMteG :odotem niF");
+            string L3 = R(" :rorre");
+
+            LogHelper.GuardarLogTransaccion(A1, nombreArchivo, L1, $"");
             try
             {
-                string query = $@"WITH MensajesOrdenados AS (
-                                SELECT top 100 percent
-                                    E.Nombre
-                                    , E.CodigoCC
-                                    , I.InstanceIdUltraMsg
-                                    , I.Token
-                                    , TP.Archivo
-                                    , TP.Ruta
-                                    , TP.Descripcion
-                                    , S.Mensaje
-                                    , S.Documento
-                                    , S.Caption
-                                    , D.DestinatarioId
-                                    , D.NroTelefono
-                                    , S.SmsId
-                                    , S.InstanciaId
-                                    , S.TipoSmsId
-                                    , S.EmpreaId
-                                    , ROW_NUMBER() OVER (PARTITION BY S.InstanciaId ORDER BY D.DestinatarioId ASC) AS  rn
-                                FROM SMS S
-                                    INNER JOIN DESTINATARIO D ON D.SmsId = S.SmsId
-                                    INNER JOIN TIPO_SMS TP ON TP.TipoSmsId = S.TipoSmsId
-                                    INNER JOIN INSTANCIA I ON I.InstanciaId = S.InstanciaId
-                                    INNER JOIN EMPRESA E ON E.EmpresaId = S.EmpreaId
-                                WHERE ISNULL(D.StatusSms, '') <> 'ok' AND ISNULL(D.CounterIntent,0) <= 3
-                            )
-                            SELECT *
-                            FROM MensajesOrdenados
-                            WHERE rn <= 1
-                            ORDER BY InstanciaId, rn;";
-                using (var context = new SqlConnection(cnx))
+                string A3 = $@"WITH MensajesOrdenados AS (
+                                        SELECT top 100 percent
+                                            E.Nombre
+                                            , E.CodigoCC
+                                            , I.InstanceIdUltraMsg
+                                            , I.Token
+                                            , TP.Archivo
+                                            , TP.Ruta
+                                            , TP.Descripcion
+                                            , S.Mensaje
+                                            , S.Documento
+                                            , S.Caption
+                                            , D.DestinatarioId
+                                            , D.NroTelefono
+                                            , S.SmsId
+                                            , S.InstanciaId
+                                            , S.TipoSmsId
+                                            , S.EmpreaId
+                                            , ROW_NUMBER() OVER (PARTITION BY S.InstanciaId ORDER BY D.DestinatarioId ASC) AS  rn
+                                        FROM SMS S
+                                            INNER JOIN DESTINATARIO D ON D.SmsId = S.SmsId
+                                            INNER JOIN TIPO_SMS TP ON TP.TipoSmsId = S.TipoSmsId
+                                            INNER JOIN INSTANCIA I ON I.InstanciaId = S.InstanciaId
+                                            INNER JOIN EMPRESA E ON E.EmpresaId = S.EmpreaId
+                                        WHERE ISNULL(D.StatusSms, '') <> 'ok' AND ISNULL(D.CounterIntent,0) <= 3
+                                    )
+                                    SELECT *
+                                    FROM MensajesOrdenados
+                                    WHERE rn <= 1
+                                    ORDER BY InstanciaId, rn;";
+                using (var A4 = new SqlConnection(cnx))
                 {
-                    mensajes = context.Query<MensajeDto>(query).ToList();
+                    A2 = A4.Query<MensajeDto>(A3).ToList();
                 }
             }
-            catch (Exception ex)
+            catch (Exception A5)
             {
-                LogHelper.GuardarLogTransaccion(logTransaccionId, nombreArchivo, "Fin metodo: GetMensajesData()", $"error: {ex.Message}");
-                mensajes = [];
+                LogHelper.GuardarLogTransaccion(A1, nombreArchivo, L2, $"{L3}{A5.Message}");
+                A2 = [];
             }
-            return mensajes;
+            return A2;
         }
     }
 }

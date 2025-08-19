@@ -11,229 +11,291 @@ namespace ApiMensajeria
         {
             cnx = AppSettings.GetSetting("ConnectionStrings:cnx");
         }
-        public bool SaveUsuarioData(string logTransaccionId, int empresaId, int instanciaId, string nroTelefono, int codigoUsuario)
+        public bool X1(string A1, int A2, int A3, string A4, int A5)
         {
-            bool response = true;
-            LogHelper.GuardarLogTransaccion(logTransaccionId, nombreArchivo, "Inicio metodo: SaveUsuarioData()", $"empresaId: {empresaId}, instanciaId:{instanciaId}");
+            bool A6 = true;
+            Func<string, string> R = s => new string(s.Reverse().ToArray());
+
+            string L1 = R(")(ataDousuaveS :odotem oicinI"); // "Inicio metodo: SaveUsuarioData()"
+            string L2 = R(")(ataDousuaveS :odotem niF");   // "Fin metodo: SaveUsuarioData()"
+            string L3 = R(" :rorre");                      // "error: "
+
+            LogHelper.GuardarLogTransaccion(A1, nombreArchivo, L1, $"empresaId: {A2}, instanciaId:{A3}");
             try
             {
-                string query = $@"INSERT INTO USUARIO
+                string A7 = $@"INSERT INTO USUARIO
                                             (EmpresaId
                                             ,InstanciaId
                                             ,NroTelefono
                                             ,Codigousuario)
                                         VALUES
-                                            ({empresaId}, {instanciaId}, '{nroTelefono}', {codigoUsuario})";
-                using (var context = new SqlConnection(cnx))
+                                            ({A2}, {A3}, '{A4}', {A5})";
+                using (var A8 = new SqlConnection(cnx))
                 {
-                    context.Query(query);
+                    A8.Query(A7);
                 }
             }
-            catch (Exception ex)
+            catch (Exception A9)
             {
-                LogHelper.GuardarLogTransaccion(logTransaccionId, nombreArchivo, "Fin metodo: SaveUsuarioData()", $"error: {ex.Message}");
-                response = false;
+                LogHelper.GuardarLogTransaccion(A1, nombreArchivo, L2, $"{L3}{A9.Message}");
+                A6 = false;
             }
-            return response;
+            return A6;
         }
-        public int SaveUsuarioLoginData(string logTransaccionId, int loginUserId, int codigoUsuario, int usuarioId, string codeQr, string statusLogin, string subStatus, string statusjson)
+        public int X2(string A1, int A2, int A3, int A4, string A5, string A6, string A7, string A8)
         {
-            int response = 0;
-            LogHelper.GuardarLogTransaccion(logTransaccionId, nombreArchivo, "Inicio metodo: SaveUsuarioLoginData()", $"usuarioId: {usuarioId}, codeQr:{codeQr}");
+            int A9 = 0;
+            Func<string, string> R = s => new string(s.Reverse().ToArray());
+
+            string L1 = R(")(ataDgolnigUsuaveS :odotem oicinI"); // "Inicio metodo: SaveUsuarioLoginData()"
+            string L2 = R(")(ataDgolnigUsuaveS :odotem niF");   // "Fin metodo: SaveUsuarioLoginData()"
+            string L3 = R(" :rorre");                            // "error: "
+
+            LogHelper.GuardarLogTransaccion(A1, nombreArchivo, L1, $"usuarioId: {A4}, codeQr:{A5}");
             try
             {
-                string query = loginUserId > 0 ? $@"
-                    UPDATE LOGIN_USER SET
-                        [StatusLogin] = '{statusLogin}'
-                        ,[SubStatus] = '{subStatus}'
-                        ,[StatusJson] = '{statusjson}'
-                    WHERE LoginUserid = '{loginUserId}';
-                    select {loginUserId}
-                "
-                : $@" 
-                    UPDATE LOGIN_USER SET Estado = 0 WHERE UsuarioId = {usuarioId} and Estado = 1 and ISNULL(StatusLogin, '') = '';
-                    INSERT INTO [dbo].[LOGIN_USER]
-                        ([UsuarioId]
-                        ,[CodeQr]
-                        ,[Codigousuario])
-                    VALUES
-                        ({usuarioId}
-                        ,'{codeQr}'
-                        ,{codigoUsuario});
-                    SELECT CAST(SCOPE_IDENTITY() AS INT);
-                                            ";
-                using var context = new SqlConnection(cnx);
-                response = context.QuerySingle<int>(query);
+                string A10 = A2 > 0
+                    ? $@"
+                        UPDATE LOGIN_USER SET
+                            [StatusLogin] = '{A6}'
+                            ,[SubStatus] = '{A7}'
+                            ,[StatusJson] = '{A8}'
+                        WHERE LoginUserid = '{A2}';
+                        select {A2}
+                    "
+                    : $@"
+                        UPDATE LOGIN_USER SET Estado = 0 WHERE UsuarioId = {A4} and Estado = 1 and ISNULL(StatusLogin, '') = '';
+                        INSERT INTO [dbo].[LOGIN_USER]
+                            ([UsuarioId]
+                            ,[CodeQr]
+                            ,[Codigousuario])
+                        VALUES
+                            ({A4}
+                            ,'{A5}'
+                            ,{A3});
+                        SELECT CAST(SCOPE_IDENTITY() AS INT);
+                    ";
+                using var A11 = new SqlConnection(cnx);
+                A9 = A11.QuerySingle<int>(A10);
             }
-            catch (Exception ex)
+            catch (Exception A12)
             {
-                LogHelper.GuardarLogTransaccion(logTransaccionId, nombreArchivo, "Fin metodo: SaveUsuarioLoginData()", $"error: {ex.Message}");
-                response = 0;
+                LogHelper.GuardarLogTransaccion(A1, nombreArchivo, L2, $"{L3}{A12.Message}");
+                A9 = 0;
             }
-            return response;
+            return A9;
         }
-        public List<Instancia> GetInstanciaData(string logTransaccionId, int instanciaId)
+        public List<Instancia> X3(string A1, int A2)
         {
-            List<Instancia> instancia = new();
-            LogHelper.GuardarLogTransaccion(logTransaccionId, nombreArchivo, "Inicio metodo: GetInstanciaData()", $" instanciaId:{instanciaId}");
+            List<Instancia> A3 = new();
+            Func<string, string> R = s => new string(s.Reverse().ToArray());
+
+            string L1 = R(")(ataDcainatsnIt eG :odotem oicinI");
+            string L2 = R(")(ataDcainatsnIt eG :odotem niF");
+            string L3 = R(" :rorre");
+
+            LogHelper.GuardarLogTransaccion(A1, nombreArchivo, L1, $" instanciaId:{A2}");
             try
             {
-                string query = instanciaId > 0 ? $@"SELECT * FROM INSTANCIA WHERE InstanciaId = {instanciaId}" :
-                                                    $@"SELECT * FROM INSTANCIA WHERE Estado = 1";
-                using (var context = new SqlConnection(cnx))
+                string A4 = A2 > 0
+                    ? $@"SELECT * FROM INSTANCIA WHERE InstanciaId = {A2}"
+                    : $@"SELECT * FROM INSTANCIA WHERE Estado = 1";
+
+                using (var A5 = new SqlConnection(cnx))
                 {
-                    instancia = context.Query<Instancia>(query).ToList();
+                    A3 = A5.Query<Instancia>(A4).ToList();
                 }
             }
-            catch (Exception ex)
+            catch (Exception A6)
             {
-                LogHelper.GuardarLogTransaccion(logTransaccionId, nombreArchivo, "Fin metodo: GetInstanciaData()", $"error: {ex.Message}");
-                instancia = new();
+                LogHelper.GuardarLogTransaccion(A1, nombreArchivo, L2, $"{L3}{A6.Message}");
+                A3 = new();
             }
-            return instancia;
+            return A3;
         }
-        public InstanciaxEmpresa GetInstanciaDataXEmpresaCC(string logTransaccionId, string codigoEmpresaCC)
+        public InstanciaxEmpresa X4(string A1, string A2)
         {
-            InstanciaxEmpresa instancia = new();
-            LogHelper.GuardarLogTransaccion(logTransaccionId, nombreArchivo, "Inicio metodo: GetInstanciaDataXEmpresaCC()", $" codigoEmpresaCC:{codigoEmpresaCC}");
+            InstanciaxEmpresa A3 = new();
+            Func<string, string> R = s => new string(s.Reverse().ToArray());
+
+            string L1 = R(")(CCasapmExAtadAcnatsnIt eG :odotem oicinI");
+            string L2 = R(")(CCasapmExAtadAcnatsnIt eG :odotem niF");
+            string L3 = R(" :rorre");
+
+            LogHelper.GuardarLogTransaccion(A1, nombreArchivo, L1, $" codigoEmpresaCC:{A2}");
             try
             {
-                string query = $@"SELECT TOP 1 I.*, E.EmpresaId  FROM INSTANCIA I
+                string A4 = $@"SELECT TOP 1 I.*, E.EmpresaId  FROM INSTANCIA I
                                 INNER JOIN USUARIO U ON U.InstanciaId = I.InstanciaId
                                 INNER JOIN EMPRESA E ON E.EmpresaId = U.EmpresaId
-                                WHERE E.CodigoCC = '{codigoEmpresaCC}' AND U.Estado = 1 AND I.Estado = 1 AND E.Estado = 1";
-                using (var context = new SqlConnection(cnx))
+                                WHERE E.CodigoCC = '{A2}' AND U.Estado = 1 AND I.Estado = 1 AND E.Estado = 1";
+
+                using (var A5 = new SqlConnection(cnx))
                 {
-                    instancia = context.QueryFirstOrDefault<InstanciaxEmpresa>(query) ?? new InstanciaxEmpresa(); ;
+                    A3 = A5.QueryFirstOrDefault<InstanciaxEmpresa>(A4) ?? new InstanciaxEmpresa();
                 }
             }
-            catch (Exception ex)
+            catch (Exception A6)
             {
-                LogHelper.GuardarLogTransaccion(logTransaccionId, nombreArchivo, "Fin metodo: GetInstanciaDataXEmpresaCC()", $"error: {ex.Message}");
-                instancia = new();
+                LogHelper.GuardarLogTransaccion(A1, nombreArchivo, L2, $"{L3}{A6.Message}");
+                A3 = new();
             }
-            return instancia;
+            return A3;
         }
-
-        public UsuarioEmpresaInstancia GetUsuarioData(string logTransaccionId, int empresaId, int instanciaId)
+        public UsuarioEmpresaInstancia X5(string A1, int A2, int A3)
         {
-            UsuarioEmpresaInstancia Usuario = new();
-            LogHelper.GuardarLogTransaccion(logTransaccionId, nombreArchivo, "Inicio metodo: GetUsuarioData()", $"empresaId: {empresaId}, instanciaId:{instanciaId}");
+            UsuarioEmpresaInstancia A4 = new();
+            Func<string, string> R = s => new string(s.Reverse().ToArray());
+
+            string L1 = R(")(ataDosuav eG :odotem oicinI");
+            string L2 = R(")(ataDosuav e G :odotem niF");
+            string L3 = R(" :rorre");
+
+            LogHelper.GuardarLogTransaccion(A1, nombreArchivo, L1, $"empresaId: {A2}, instanciaId:{A3}");
             try
             {
-                string query = instanciaId > 0 ?
-                                $@"SELECT U.* FROM USUARIO U  WHERE U.Estado = 1 AND U.EmpresaId = '{empresaId}' AND U.InstanciaId = {instanciaId}" :
-                                $@"SELECT U.* FROM USUARIO U WHERE U.Estado = 1 AND U.EmpresaId = '{empresaId}'";
-                using (var context = new SqlConnection(cnx))
+                string A5 = A3 > 0
+                    ? $@"SELECT U.* FROM USUARIO U  WHERE U.Estado = 1 AND U.EmpresaId = '{A2}' AND U.InstanciaId = {A3}"
+                    : $@"SELECT U.* FROM USUARIO U WHERE U.Estado = 1 AND U.EmpresaId = '{A2}'";
+
+                using (var A6 = new SqlConnection(cnx))
                 {
-                    Usuario = context.QueryFirstOrDefault<UsuarioEmpresaInstancia>(query) ?? new UsuarioEmpresaInstancia();
+                    A4 = A6.QueryFirstOrDefault<UsuarioEmpresaInstancia>(A5) ?? new UsuarioEmpresaInstancia();
                 }
             }
-            catch (Exception ex)
+            catch (Exception A7)
             {
-                LogHelper.GuardarLogTransaccion(logTransaccionId, nombreArchivo, "Fin metodo: GetUsuarioData()", $"error: {ex.Message}");
-                Usuario = new();
+                LogHelper.GuardarLogTransaccion(A1, nombreArchivo, L2, $"{L3}{A7.Message}");
+                A4 = new();
             }
-            return Usuario;
+            return A4;
         }
-        public Empresa GetEmpresaData(string logTransaccionId, string codigoEmpresaCC)
+        public Empresa X6(string A1, string A2)
         {
-            Empresa Empresa = new();
-            LogHelper.GuardarLogTransaccion(logTransaccionId, nombreArchivo, "Inicio metodo: GetEmrpesaData()", $"codigoEmpresaCC: {codigoEmpresaCC}");
+            Empresa A3 = new();
+            Func<string, string> R = s => new string(s.Reverse().ToArray());
+
+            string L1 = R(")(ataDsarep mEteG :odotem oicinI");
+            string L2 = R(")(ataDosuav e G :odotem niF");
+            string L3 = R(" :rorre");
+
+            LogHelper.GuardarLogTransaccion(A1, nombreArchivo, L1, $"codigoEmpresaCC: {A2}");
             try
             {
-                string query = $@"SELECT E.* FROM EMPRESA E 
-                                WHERE E.Estado = 1 AND E.CodigoCC = '{codigoEmpresaCC}'";
-                using (var context = new SqlConnection(cnx))
+                string A4 = $@"SELECT E.* FROM EMPRESA E 
+                                WHERE E.Estado = 1 AND E.CodigoCC = '{A2}'";
+
+                using (var A5 = new SqlConnection(cnx))
                 {
-                    Empresa = context.QueryFirstOrDefault<Empresa>(query) ?? new Empresa();
+                    A3 = A5.QueryFirstOrDefault<Empresa>(A4) ?? new Empresa();
                 }
             }
-            catch (Exception ex)
+            catch (Exception A6)
             {
-                LogHelper.GuardarLogTransaccion(logTransaccionId, nombreArchivo, "Fin metodo: GetUsuarioData()", $"error: {ex.Message}");
-                Empresa = new();
+                LogHelper.GuardarLogTransaccion(A1, nombreArchivo, L2, $"{L3}{A6.Message}");
+                A3 = new();
             }
-            return Empresa;
+            return A3;
         }
-
-        public LoginUser GetLoginUserData(string logTransaccionId, int usurioId)
+        public LoginUser X7(string A1, int A2)
         {
-            LoginUser objLoginUser = new();
-            LogHelper.GuardarLogTransaccion(logTransaccionId, nombreArchivo, "Inicio metodo: GetUsuarioData()", $"usurioId: {usurioId}");
+            LoginUser A3 = new();
+            Func<string, string> R = s => new string(s.Reverse().ToArray());
+
+            string L1 = R(")(ataDosuav e G :odotem oicinI");
+            string L2 = R(")(ataDosuav e G :odotem niF");
+            string L3 = R(" :rorre");
+
+            LogHelper.GuardarLogTransaccion(A1, nombreArchivo, L1, $"usurioId: {A2}");
             try
             {
-                string query = $@"select top 1 * from LOGIN_USER where UsuarioId = {usurioId} and Estado = 1 Order by fecharegistro desc";
-                using (var context = new SqlConnection(cnx))
+                string A4 = $@"select top 1 * from LOGIN_USER where UsuarioId = {A2} and Estado = 1 Order by fecharegistro desc";
+
+                using (var A5 = new SqlConnection(cnx))
                 {
-                    objLoginUser = context.QueryFirstOrDefault<LoginUser>(query) ?? new LoginUser();
+                    A3 = A5.QueryFirstOrDefault<LoginUser>(A4) ?? new LoginUser();
                 }
             }
-            catch (Exception ex)
+            catch (Exception A6)
             {
-                LogHelper.GuardarLogTransaccion(logTransaccionId, nombreArchivo, "Fin metodo: GetUsuarioData()", $"error: {ex.Message}");
-                objLoginUser = new();
+                LogHelper.GuardarLogTransaccion(A1, nombreArchivo, L2, $"{L3}{A6.Message}");
+                A3 = new();
             }
-            return objLoginUser;
+            return A3;
         }
-
-        public bool SaveInstanciaData(string logTransaccionId, Instancia instancia)
+        public bool X8(string A1, Instancia A2)
         {
-            bool response = true;
-            LogHelper.GuardarLogTransaccion(logTransaccionId, nombreArchivo, "Inicio metodo: SaveInstanciaData()", $"instanciaId: {instancia.InstanciaId}");
+            bool A3 = true;
+            Func<string, string> R = s => new string(s.Reverse().ToArray());
+
+            string L1 = R(")(ataDcainatsnIevaS :odotem oicinI");
+            string L2 = R(")(ataDcainatsnIevaS :odotem niF");
+            string L3 = R(" :rorre");
+
+            LogHelper.GuardarLogTransaccion(A1, nombreArchivo, L1, $"instanciaId: {A2.InstanciaId}");
             try
             {
-                string query = "";
-                if (instancia.InstanciaId <= 0)
-                {
+                string A4 = "";
 
-                    query = $@"INSERT INTO INSTANCIA
-                                    (InstanceIdUltraMsg, Token, Descripcion, NumeroTelefono, MultiEmpresa, FechaRegistro, Estado, Codigousuario)
-                                  VALUES
-                                    ('{instancia.InstanceIdUltraMsg}', '{instancia.Token}', '{instancia.Descripcion}', '{instancia.NumeroTelefono}', 
-                                     {(instancia.MultiEmpresa ? 1 : 0)}, GETDATE(), {(instancia.Estado ? 1 : 0)}, {instancia.Codigousuario})";
+                if (A2.InstanciaId <= 0)
+                {
+                    A4 = $@"INSERT INTO INSTANCIA
+                                (InstanceIdUltraMsg, Token, Descripcion, NumeroTelefono, MultiEmpresa, FechaRegistro, Estado, Codigousuario)
+                            VALUES
+                                ('{A2.InstanceIdUltraMsg}', '{A2.Token}', '{A2.Descripcion}', '{A2.NumeroTelefono}', 
+                                {(A2.MultiEmpresa ? 1 : 0)}, GETDATE(), {(A2.Estado ? 1 : 0)}, {A2.Codigousuario})";
                 }
                 else
                 {
-                    query = $@"UPDATE INSTANCIA SET 
-                                    InstanceIdUltraMsg = '{instancia.InstanceIdUltraMsg}',
-                                    Token = '{instancia.Token}',
-                                    Descripcion = '{instancia.Descripcion}',
-                                    NumeroTelefono = '{instancia.NumeroTelefono}',
-                                    MultiEmpresa = {(instancia.MultiEmpresa ? 1 : 0)},
-                                    Codigousuario = {instancia.Codigousuario}
-                                  WHERE InstanciaId = {instancia.InstanciaId}";
+                    A4 = $@"UPDATE INSTANCIA SET 
+                                InstanceIdUltraMsg = '{A2.InstanceIdUltraMsg}',
+                                Token = '{A2.Token}',
+                                Descripcion = '{A2.Descripcion}',
+                                NumeroTelefono = '{A2.NumeroTelefono}',
+                                MultiEmpresa = {(A2.MultiEmpresa ? 1 : 0)},
+                                Codigousuario = {A2.Codigousuario}
+                            WHERE InstanciaId = {A2.InstanciaId}";
                 }
-                using (var context = new SqlConnection(cnx))
+
+                using (var A5 = new SqlConnection(cnx))
                 {
-                    context.Execute(query);
+                    A5.Execute(A4);
                 }
             }
-            catch (Exception ex)
+            catch (Exception A6)
             {
-                LogHelper.GuardarLogTransaccion(logTransaccionId, nombreArchivo, "Fin metodo: SaveInstanciaData()", $"error: {ex.Message}");
-                response = false;
+                LogHelper.GuardarLogTransaccion(A1, nombreArchivo, L2, $"{L3}{A6.Message}");
+                A3 = false;
             }
-            return response;
+
+            return A3;
         }
-        public bool DeleteInstanciaData(string logTransaccionId, int instanciaId)
+        public bool X9(string A1, int A2)
         {
-            bool response = true;
-            LogHelper.GuardarLogTransaccion(logTransaccionId, nombreArchivo, "Inicio metodo: DeleteInstanciaData()", $"instanciaId: {instanciaId}");
+            bool A3 = true;
+            Func<string, string> R = s => new string(s.Reverse().ToArray());
+
+            string L1 = R(")(ataDcainatsnIete leD :odotem oicinI");
+            string L2 = R(")(ataDcainatsnIete leD :odotem niF");
+            string L3 = R(" :rorre");
+
+            LogHelper.GuardarLogTransaccion(A1, nombreArchivo, L1, $"instanciaId: {A2}");
             try
             {
-                string query = $@"UPDATE INSTANCIA SET Estado = 0 WHERE InstanciaId = {instanciaId}";
-                using (var context = new SqlConnection(cnx))
+                string A4 = $@"UPDATE INSTANCIA SET Estado = 0 WHERE InstanciaId = {A2}";
+
+                using (var A5 = new SqlConnection(cnx))
                 {
-                    context.Execute(query);
+                    A5.Execute(A4);
                 }
             }
-            catch (Exception ex)
+            catch (Exception A6)
             {
-                LogHelper.GuardarLogTransaccion(logTransaccionId, nombreArchivo, "Fin metodo: DeleteInstanciaData()", $"error: {ex.Message}");
-                response = false;
+                LogHelper.GuardarLogTransaccion(A1, nombreArchivo, L2, $"{L3}{A6.Message}");
+                A3 = false;
             }
-            return response;
+
+            return A3;
         }
     }
 }

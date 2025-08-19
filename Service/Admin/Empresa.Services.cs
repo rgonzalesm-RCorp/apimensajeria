@@ -21,7 +21,7 @@ namespace ApiMensajeria
 
             LogHelper.GuardarLogTransaccion(logTransaccionId, NOMBREARCHIVO, "Inicio del Metodo GuardarEmpresa", $"codigoEmpresaCC: {JsonConvert.SerializeObject(request.Empresa)}");
 
-            var (empresaId, success) = empresaDat.SaveEmpresa(logTransaccionId, request);
+            var (empresaId, success) = empresaDat.X1(logTransaccionId, request);
             if (!success)
             {
                 LogHelper.GuardarLogTransaccion(logTransaccionId, NOMBREARCHIVO, "Fin del Metodo GuardarEmpresa", $"Error al guardar la empresa");
@@ -39,11 +39,11 @@ namespace ApiMensajeria
             LogHelper.GuardarLogTransaccion(logTransaccionId, NOMBREARCHIVO, "Inicio del Metodo GetListaEmpresas", $"");
 
             var empresaDat = new EmpresaData();
-            var empresas = empresaDat.GetEmpresas(logTransaccionId);
+            var empresas = empresaDat.X2(logTransaccionId);
 
             LogHelper.GuardarLogTransaccion(logTransaccionId, NOMBREARCHIVO, "Fin del Metodo GetListaEmpresas", $"");
 
-            return empresas.listado;
+            return empresas.R1;
         }
         public async Task<ResponseListaMensajes> DeleteEmpresa(string logTransaccionId, int empresaId)
         {
@@ -57,7 +57,7 @@ namespace ApiMensajeria
 
             LogHelper.GuardarLogTransaccion(logTransaccionId, NOMBREARCHIVO, "Inicio del Metodo DeleteEmpresa", $"empresaId: {empresaId}");
 
-            var (deletedEmpresaId, success) = empresaDat.DeleteEmpresa(logTransaccionId, empresaId);
+            var (deletedEmpresaId, success) = empresaDat.X3(logTransaccionId, empresaId);
             if (!success)
             {
                 LogHelper.GuardarLogTransaccion(logTransaccionId, NOMBREARCHIVO, "Fin del Metodo DeleteEmpresa", $"Error al eliminar la empresa");

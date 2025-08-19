@@ -23,13 +23,13 @@ namespace ApiMensajeria
             var configuracionEmpresa = new ConfiguracionPorEmpresasData();
             tipoSmsId = Convert.ToInt32(AppSettings.GetSetting($"TipoSms:{tipoMensaje}"));
 
-            responseTipoSms = smsService.GetTipoSmsData(logTransaccionId, tipoSmsId);
+            responseTipoSms = smsService.X4(logTransaccionId, tipoSmsId);
             if (responseTipoSms.Count <= 0)
             {
                 LogHelper.GuardarLogTransaccion(logTransaccionId, NOMBREARCHIVO, "Fin SendText", $"No se puedo Obtener los tipos de mensajes");
                 return ("No se puedo Obtener los tipos de mensajes", false);
             }
-            instancia = instanciaService.GetInstanciaDataXEmpresaCC(logTransaccionId, codigoEmpresaCC);
+            instancia = instanciaService.X4(logTransaccionId, codigoEmpresaCC);
             if (instancia == null || instancia.InstanciaId <= 0)
             {
                 LogHelper.GuardarLogTransaccion(logTransaccionId, NOMBREARCHIVO, "Fin SendText", $"No se puedo Obtener la instancia");
@@ -65,13 +65,13 @@ namespace ApiMensajeria
 
                 if (!status) return (mensaje, status);
 
-                int smsId = await smsService.SaveSmsData(logTransaccionId, sms);
+                int smsId = await smsService.X1(logTransaccionId, sms);
 
                 foreach (var destinatario in objBody.numeros)
                 {
                     try
                     {
-                        int destinatarioId = await smsService.SaveDestinatarioData(logTransaccionId, smsId, objBody.codigoUsuarioXP, destinatario);
+                        int destinatarioId = await smsService.X2(logTransaccionId, smsId, objBody.codigoUsuarioXP, destinatario);
 
                         /*var parametros = new List<ParamsBodyRequest>
                         {
@@ -128,13 +128,13 @@ namespace ApiMensajeria
 
                 string ruta = SaveDocumentoFisico.GuardarArchivoBase64(instancia.EmpresaId, objBody.dataBase64, objBody.extension);
                 sms.Documento = ruta;
-                int smsId = await smsService.SaveSmsData(logTransaccionId, sms);
+                int smsId = await smsService.X1(logTransaccionId, sms);
 
                 foreach (var destinatario in objBody.numeros)
                 {
                     try
                     {
-                        int destinatarioId = await smsService.SaveDestinatarioData(logTransaccionId, smsId, objBody.codigoUsuarioXP, destinatario);
+                        int destinatarioId = await smsService.X2(logTransaccionId, smsId, objBody.codigoUsuarioXP, destinatario);
                         /*var parametros = new List<ParamsBodyRequest>
                         {
                             new() { clave = "to", valor = destinatario.NroTelefono },
@@ -191,13 +191,13 @@ namespace ApiMensajeria
                 string ruta = SaveDocumentoFisico.GuardarArchivoBase64(instancia.EmpresaId, objBody.dataBase64, objBody.extension);
                 sms.Documento = ruta;
 
-                int smsId = await smsService.SaveSmsData(logTransaccionId, sms);
+                int smsId = await smsService.X1(logTransaccionId, sms);
 
                 foreach (var destinatario in objBody.numeros)
                 {
                     try
                     {
-                        int destinatarioId = await smsService.SaveDestinatarioData(
+                        int destinatarioId = await smsService.X2(
                             logTransaccionId, smsId, objBody.codigoUsuarioXP, destinatario);
                         /*var parametros = new List<ParamsBodyRequest>
                         {
@@ -248,9 +248,9 @@ namespace ApiMensajeria
             {
                 int tipoSmsId = Convert.ToInt32(AppSettings.GetSetting("TipoSms:VIDEO"));
 
-                List<TipoSms> responseTipoSms = smsService.GetTipoSmsData(logTransaccionId, tipoSmsId);
+                List<TipoSms> responseTipoSms = smsService.X4(logTransaccionId, tipoSmsId);
 
-                var instancia = instanciaService.GetInstanciaDataXEmpresaCC(logTransaccionId, objBody.codigoEmpresaCC);
+                var instancia = instanciaService.X4(logTransaccionId, objBody.codigoEmpresaCC);
                 if (instancia == null || instancia.InstanciaId <= 0)
                 {
                     LogHelper.GuardarLogTransaccion(logTransaccionId, NOMBREARCHIVO, "Fin SendText", $"No se puedo Obtener la instancia");
@@ -265,13 +265,13 @@ namespace ApiMensajeria
                     TipoSmsId = tipoSmsId
                 };
 
-                int smsId = await smsService.SaveSmsData(logTransaccionId, sms);
+                int smsId = await smsService.X1(logTransaccionId, sms);
 
                 foreach (var destinatario in objBody.numeros)
                 {
                     try
                     {
-                        int destinatarioId = await smsService.SaveDestinatarioData(
+                        int destinatarioId = await smsService.X2(
                             logTransaccionId, smsId, objBody.codigoUsuarioXP, destinatario);
                         var parametros = new List<ParamsBodyRequest>
                         {
@@ -295,7 +295,7 @@ namespace ApiMensajeria
 
                         string message = response?.message ?? "Sin respuesta";
 
-                        await smsService.UpdateDestinatarioData(
+                        await smsService.X3(
                             logTransaccionId, destinatarioId, message, rawResponse);
                     }
                     catch (Exception ex)
@@ -318,7 +318,7 @@ namespace ApiMensajeria
             List<TipoSms> lista = [];
             try
             {
-                lista = smsService.GetTipoSmsData(logTransaccionId, 0);
+                lista = smsService.X4(logTransaccionId, 0);
             }
             catch (System.Exception)
             {

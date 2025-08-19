@@ -16,7 +16,7 @@ namespace ApiMensajeria
             var apiService = new ApiService();
             var configuracionEmpresa = new ConfiguracionPorEmpresasData();
 
-            List<MensajeDto> listaMensajes = smsData.GetMensajesData(logTransaccionId);
+            List<MensajeDto> listaMensajes = smsData.X5(logTransaccionId);
 
             foreach (var mensaje in listaMensajes)
             {
@@ -68,7 +68,7 @@ namespace ApiMensajeria
 
                 string message = response?.message ?? "Sin respuesta";
 
-                await smsData.UpdateDestinatarioData(logTransaccionId, mensaje.DestinatarioId, message, rawResponse, cobrar);
+                await smsData.X3(logTransaccionId, mensaje.DestinatarioId, message, rawResponse, cobrar);
             }
             return true;
         }

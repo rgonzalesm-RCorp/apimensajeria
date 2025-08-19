@@ -22,7 +22,7 @@ namespace ApiMensajeria
             LogHelper.GuardarLogTransaccion(logTransaccionId, NOMBREARCHIVO, "Inicio del Metodo RegistroUsuarioService", $"codigoEmpresaCC: {codigoEmpresaCC}, instanciaId: {instanciaId}");
 
             // 1. Obtener empresa
-            Empresa empresa = instanciaData.GetEmpresaData(logTransaccionId, codigoEmpresaCC);
+            Empresa empresa = instanciaData.X6(logTransaccionId, codigoEmpresaCC);
             if (empresa == null)
             {
                 LogHelper.GuardarLogTransaccion(logTransaccionId, NOMBREARCHIVO, "Empresa no encontrada", codigoEmpresaCC);
@@ -32,12 +32,12 @@ namespace ApiMensajeria
             }
 
             // 2. Obtener usuario
-            UsuarioEmpresaInstancia usuario = instanciaData.GetUsuarioData(logTransaccionId, empresa.EmpresaId, instanciaId);
+            UsuarioEmpresaInstancia usuario = instanciaData.X5(logTransaccionId, empresa.EmpresaId, instanciaId);
 
             // 3. Si no existe el usuario, crear uno
             if (usuario == null || usuario.UsuarioId <= 0)
             {
-                bool usuarioCreado = instanciaData.SaveUsuarioData(logTransaccionId, empresa.EmpresaId, instanciaId, "", codigoUsuario);
+                bool usuarioCreado = instanciaData.X1(logTransaccionId, empresa.EmpresaId, instanciaId, "", codigoUsuario);
                 if (!usuarioCreado)
                 {
                     LogHelper.GuardarLogTransaccion(logTransaccionId, NOMBREARCHIVO, "Error al crear usuario", $"EmpresaId: {empresa.EmpresaId}, InstanciaId: {instanciaId}");
@@ -46,7 +46,7 @@ namespace ApiMensajeria
                     return responseRegistrousuario;
                 }
 
-                usuario = instanciaData.GetUsuarioData(logTransaccionId, empresa.EmpresaId, instanciaId);
+                usuario = instanciaData.X5(logTransaccionId, empresa.EmpresaId, instanciaId);
                 if (usuario == null || usuario.UsuarioId <= 0)
                 {
                     LogHelper.GuardarLogTransaccion(logTransaccionId, NOMBREARCHIVO, "Usuario no encontrado después de crearlo", "");
@@ -55,7 +55,7 @@ namespace ApiMensajeria
                 }
             }
             // 4. Obtener Instancia
-            List<Instancia> instancia = instanciaData.GetInstanciaData(logTransaccionId, instanciaId);
+            List<Instancia> instancia = instanciaData.X3(logTransaccionId, instanciaId);
             if (instancia.Count <= 0)
             {
                 LogHelper.GuardarLogTransaccion(logTransaccionId, NOMBREARCHIVO, "Instancia no encontrada", instanciaId.ToString());
@@ -85,16 +85,16 @@ namespace ApiMensajeria
                 return responseRegistrousuario;
             }
 
-            // 6. Guardar login del usuario
-            int loginGuardado = instanciaData.SaveUsuarioLoginData(
+            
+            int loginGuardado = instanciaData.X2(
                 logTransaccionId,
-                loginUserId: 0,
-                codigoUsuario: codigoUsuario,
-                usuarioId: usuario.UsuarioId,
-                codeQr: qrResponse?.qrCode ?? string.Empty,
-                statusLogin: "",
-                subStatus: "",
-                statusjson: ""
+                 0,
+                codigoUsuario,
+                usuario.UsuarioId,
+                qrResponse?.qrCode ?? string.Empty,
+                "",
+                "",
+                ""
             );
 
             if (loginGuardado <= 0)
@@ -118,7 +118,7 @@ namespace ApiMensajeria
             List<Instancia> Lista = [];
             try
             {
-                Lista = INSTANCIADATA.GetInstanciaData(logTransaccionId, instanceId);
+                Lista = INSTANCIADATA.X3(logTransaccionId, instanceId);
             }
             catch (Exception)
             {
@@ -133,7 +133,7 @@ namespace ApiMensajeria
             Empresa objEmpresa;
             try
             {
-                objEmpresa = INSTANCIADATA.GetEmpresaData(logTransaccionId, codigoEmpresaCC);
+                objEmpresa = INSTANCIADATA.X6(logTransaccionId, codigoEmpresaCC);
             }
             catch (Exception)
             {
@@ -148,7 +148,7 @@ namespace ApiMensajeria
             UsuarioEmpresaInstancia objUsuario;
             try
             {
-                objUsuario = INSTANCIADATA.GetUsuarioData(logTransaccionId, empresaId, 0);
+                objUsuario = INSTANCIADATA.X5(logTransaccionId, empresaId, 0);
             }
             catch (Exception)
             {
@@ -162,14 +162,14 @@ namespace ApiMensajeria
             ApiService APISERVICE = new ApiService();
             ApiResponseStatusQr responseStatus = new();
 
-            List<Instancia> instancia = INSTANCIADATA.GetInstanciaData(logTransaccionId, instanciaId);
+            List<Instancia> instancia = INSTANCIADATA.X3(logTransaccionId, instanciaId);
             if (instancia.Count <= 0)
             {
                 LogHelper.GuardarLogTransaccion(logTransaccionId, NOMBREARCHIVO, "Instancia no encontrada", instanciaId.ToString());
                 //responseRegistrousuario.message = "Instancia no encontrada";
                 return (responseStatus, "Instancia no encontrada", false);
             }
-            LoginUser loginUser = INSTANCIADATA.GetLoginUserData(logTransaccionId, usurioId);
+            LoginUser loginUser = INSTANCIADATA.X7(logTransaccionId, usurioId);
             if (loginUser.LoginUserId <= 0)
             {
                 LogHelper.GuardarLogTransaccion(logTransaccionId, NOMBREARCHIVO, "LoginUser no encontrada", usurioId.ToString());
@@ -220,15 +220,15 @@ namespace ApiMensajeria
             }
 
 
-            int loginGuardado = INSTANCIADATA.SaveUsuarioLoginData(
+            int loginGuardado = INSTANCIADATA.X2(
                 logTransaccionId,
-                loginUserId: loginUser.LoginUserId,
-                codigoUsuario: 0,
-                usuarioId: 0,
-                codeQr: "",
-                statusLogin: qrSatusResponse.status.accountStatus.status,
-                subStatus: qrSatusResponse.status.accountStatus.substatus,
-                statusjson: JsonConvert.SerializeObject(qrSatusResponse)
+                loginUser.LoginUserId,
+                0,
+                0,
+                "",
+                qrSatusResponse.status.accountStatus.status,
+                qrSatusResponse.status.accountStatus.substatus,
+                JsonConvert.SerializeObject(qrSatusResponse)
             );
 
             return (responseStatus, "No hay errores", true);
@@ -239,7 +239,7 @@ namespace ApiMensajeria
             bool response = false;
             try
             {
-                response = INSTANCIADATA.SaveInstanciaData(logTransaccionId, instancia);
+                response = INSTANCIADATA.X8(logTransaccionId, instancia);
             }
             catch (Exception)
             {
@@ -253,7 +253,7 @@ namespace ApiMensajeria
             bool response = false;
             try
             {
-                response = INSTANCIADATA.DeleteInstanciaData(logTransaccionId, instanciaId);
+                response = INSTANCIADATA.X9(logTransaccionId, instanciaId);
             }
             catch (Exception)
             {

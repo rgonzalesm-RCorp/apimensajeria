@@ -14,159 +14,173 @@ namespace ApiMensajeria
         {
             cnx = AppSettings.GetSetting("ConnectionStrings:cnx");
         }
-        public (int empresaId, bool success) SaveEmpresa(string logTransaccionId, SaveEmpresaRequest request)
+        public (int, bool) X1(string A1, SaveEmpresaRequest A2)
         {
-            LogHelper.GuardarLogTransaccion(logTransaccionId, nombreArchivo, "Inicio metodo: SaveEmpresa()", $"Empresa: {JsonConvert.SerializeObject(request.Empresa)}");
+            Func<string, string> R = s => new string(s.Reverse().ToArray());
+            string L1 = R(")(aesrepmEv aS :odotem oicinI");
+            string L2 = R(")(aesrepmEv aS :odotem niF");
+            string L3 = R(" :rorre");
+
+            LogHelper.GuardarLogTransaccion(A1, nombreArchivo, L1, $"Empresa: {JsonConvert.SerializeObject(A2.Empresa)}");
 
             try
             {
-                using var connection = new SqlConnection(cnx);
-                connection.Open();
+                using var A3 = new SqlConnection(cnx);
+                A3.Open();
 
-                using var transaction = connection.BeginTransaction();
+                using var A4 = A3.BeginTransaction();
 
                 try
                 {
-                    var insertEmpresaQuery = @"
+                    var A5 = @"
                         INSERT INTO EMPRESA (Nombre, Srv, DB, Usuario, Pasword, CodigoCC, Codigousuario)
                         VALUES (@Nombre, @Srv, @DB, @Usuario, @Pasword, @CodigoCC, @Codigousuario);
                         SELECT CAST(SCOPE_IDENTITY() as int);";
 
-                    int empresaId = connection.ExecuteScalar<int>(insertEmpresaQuery, request.Empresa, transaction);
+                    int A6 = A3.ExecuteScalar<int>(A5, A2.Empresa, A4);
 
-                    if (empresaId <= 0)
+                    if (A6 <= 0)
                     {
-                        LogHelper.GuardarLogTransaccion(logTransaccionId, nombreArchivo, "Error", "No se pudo insertar la empresa.");
-                        transaction.Rollback();
+                        LogHelper.GuardarLogTransaccion(A1, nombreArchivo, "Error", "No se pudo insertar la empresa.");
+                        A4.Rollback();
                         return (0, false);
                     }
 
-                    if (request.Configuraciones != null && request.Configuraciones.Any())
+                    if (A2.Configuraciones != null && A2.Configuraciones.Any())
                     {
-                        var insertConfigQuery = @"
+                        var A7 = @"
                             INSERT INTO EMPRESA_CONFIGURACION (EmpresaId, Clave, Valor)
                             VALUES (@EmpresaId, @Clave, @Valor);";
 
-                        foreach (var config in request.Configuraciones)
+                        foreach (var A8 in A2.Configuraciones)
                         {
-                            config.EmpresaId = empresaId;
-                            connection.Execute(insertConfigQuery, config, transaction);
+                            A8.EmpresaId = A6;
+                            A3.Execute(A7, A8, A4);
                         }
 
-                        LogHelper.GuardarLogTransaccion(logTransaccionId, nombreArchivo, "Configuraciones guardadas", JsonConvert.SerializeObject(request.Configuraciones));
+                        LogHelper.GuardarLogTransaccion(A1, nombreArchivo, "Configuraciones guardadas", JsonConvert.SerializeObject(A2.Configuraciones));
                     }
 
-                    if (request.Usuario != null)
+                    if (A2.Usuario != null)
                     {
-                        request.Usuario.EmpresaId = empresaId;
-
-                        var insertUsuarioQuery = @"
+                        A2.Usuario.EmpresaId = A6;
+                        var A9 = @"
                             INSERT INTO USUARIO (EmpresaId, InstanciaId, NroTelefono, CodigoUsuario)
                             VALUES (@EmpresaId, @InstanciaId, @NroTelefono, @CodigoUsuario);";
-
-                        connection.Execute(insertUsuarioQuery, request.Usuario, transaction);
+                        A3.Execute(A9, A2.Usuario, A4);
                     }
-                    if (request.EmpresaId > 0)
+
+                    if (A2.EmpresaId > 0)
                     {
-                        var updateEmpresaQuery = $@"
+                        var A10 = $@"
                             UPDATE EMPRESA SET Estado = 0
-                            WHERE EmpresaId = {request.EmpresaId};";
-                        connection.Execute(updateEmpresaQuery, null, transaction);
+                            WHERE EmpresaId = {A2.EmpresaId};";
+                        A3.Execute(A10, null, A4);
                     }
 
-
-                    transaction.Commit();
-
-                    LogHelper.GuardarLogTransaccion(logTransaccionId, nombreArchivo, "Fin metodo: SaveEmpresa()", "Empresa guardada correctamente.");
-                    return (empresaId, true);
+                    A4.Commit();
+                    LogHelper.GuardarLogTransaccion(A1, nombreArchivo, L2, "Empresa guardada correctamente.");
+                    return (A6, true);
                 }
-                catch (Exception exInner)
+                catch (Exception A11)
                 {
-                    transaction.Rollback();
-                    LogHelper.GuardarLogTransaccion(logTransaccionId, nombreArchivo, "Rollback SaveEmpresa()", $"Error interno: {exInner.Message}");
+                    A4.Rollback();
+                    LogHelper.GuardarLogTransaccion(A1, nombreArchivo, "Rollback X1()", $"Error interno: {A11.Message}");
                     return (0, false);
                 }
             }
-            catch (Exception ex)
+            catch (Exception A12)
             {
-                LogHelper.GuardarLogTransaccion(logTransaccionId, nombreArchivo, "Error de conexión SaveEmpresa()", $"Error externo: {ex.Message}");
+                LogHelper.GuardarLogTransaccion(A1, nombreArchivo, "Error de conexión X1()", $"Error externo: {A12.Message}");
                 return (0, false);
             }
         }
-
-        public (List<EmpresaDetalle> listado, bool success) GetEmpresas(string logTransaccionId)
+        public (List<EmpresaDetalle> R1, bool R2) X2(string A1)
         {
-            LogHelper.GuardarLogTransaccion(logTransaccionId, nombreArchivo, "Inicio metodo: GetEmpresas()", $"");
+            Func<string, string> R = s => new string(s.Reverse().ToArray());
+            string L1 = R(")(saserpme t eG :odotem oicinI");
+            string L2 = R(")(saserpme t eG :odotem niF");
+            string L3 = R(" :rorre");
+
+            LogHelper.GuardarLogTransaccion(A1, nombreArchivo, L1, $"");
 
             try
             {
-                using var connection = new SqlConnection(cnx);
-                connection.Open();
+                using var A2 = new SqlConnection(cnx);
+                A2.Open();
 
-                var query = @"SELECT 
-                            E.EmpresaId EmpresaId_
-                            , E.Nombre
-                            , E.CodigoCC
-                            , E.FechaRegistro
-                            , EC.*
-                            , I.InstanciaId
-                            , I.InstanceIdUltraMsg
-                            , I.Token
-                            , I.Descripcion
-                            , I.MultiEmpresa
-                            , I.NumeroTelefono
-                            FROM EMPRESA E
-                            INNER JOIN ConfiguracionEmpresa EC ON EC.EmpresaId = E.EmpresaId
-                            INNER JOIN USUARIO U ON U.EmpresaId = E.EmpresaId
-                            INNER JOIN INSTANCIA I ON I.InstanciaId = U.InstanciaId
-                            WHERE E.Estado = 1
-                            ORDER BY E.Nombre";
+                var A3 = @"
+                    SELECT 
+                        E.EmpresaId EmpresaId_
+                        , E.Nombre
+                        , E.CodigoCC
+                        , E.FechaRegistro
+                        , EC.*
+                        , I.InstanciaId
+                        , I.InstanceIdUltraMsg
+                        , I.Token
+                        , I.Descripcion
+                        , I.MultiEmpresa
+                        , I.NumeroTelefono
+                    FROM EMPRESA E
+                    INNER JOIN ConfiguracionEmpresa EC ON EC.EmpresaId = E.EmpresaId
+                    INNER JOIN USUARIO U ON U.EmpresaId = E.EmpresaId
+                    INNER JOIN INSTANCIA I ON I.InstanciaId = U.InstanciaId
+                    WHERE E.Estado = 1
+                    ORDER BY E.Nombre";
 
-                var empresas = connection.Query<EmpresaDetalle>(query).ToList();
+                var A4 = A2.Query<EmpresaDetalle>(A3).ToList();
 
-                LogHelper.GuardarLogTransaccion(logTransaccionId, nombreArchivo, "Fin metodo: GetEmpresas()", $"Total empresas encontradas: {empresas.Count}");
-                return (empresas, true);
+                LogHelper.GuardarLogTransaccion(A1, nombreArchivo, L2, $"Total empresas encontradas: {A4.Count}");
+                return (A4, true);
             }
-            catch (Exception ex)
+            catch (Exception A5)
             {
-                LogHelper.GuardarLogTransaccion(logTransaccionId, nombreArchivo, "Error GetEmpresas()", $"Error: {ex.Message}");
+                LogHelper.GuardarLogTransaccion(A1, nombreArchivo, "Error X2()", $"{L3}{A5.Message}");
                 return (null, false);
             }
         }
-        public (int empresaId, bool success) DeleteEmpresa(string logTransaccionId, int empresaId)
+        public (int R1, bool R2) X3(string A1, int A2)
         {
-            LogHelper.GuardarLogTransaccion(logTransaccionId, nombreArchivo, "Inicio metodo: DeleteEmpresa()", $"Empresa: {empresaId}");
+            Func<string, string> R = s => new string(s.Reverse().ToArray());
+            string L1 = R(")(aesrepmEv ete leD :odotem oicinI");
+            string L2 = R(")(aesrepmEv ete leD :odotem niF");
+            string L3 = R(" :rorre");
+
+            LogHelper.GuardarLogTransaccion(A1, nombreArchivo, L1, $"Empresa: {A2}");
 
             try
             {
-                using var connection = new SqlConnection(cnx);
-                connection.Open();
-                using var transaction = connection.BeginTransaction();
+                using var A3 = new SqlConnection(cnx);
+                A3.Open();
+
+                using var A4 = A3.BeginTransaction();
+
                 try
                 {
-                    var updateEmpresaQuery = $@"
+                    var A5 = $@"
                         UPDATE EMPRESA SET Estado = 0
-                        WHERE EmpresaId = {empresaId};";
-                    connection.Execute(updateEmpresaQuery,null, transaction);
+                        WHERE EmpresaId = {A2};";
 
-                    transaction.Commit();
+                    A3.Execute(A5, null, A4);
 
-                    LogHelper.GuardarLogTransaccion(logTransaccionId, nombreArchivo, "Fin metodo: DeleteEmpresa()", "Empresa eliminada correctamente.");
+                    A4.Commit();
+
+                    LogHelper.GuardarLogTransaccion(A1, nombreArchivo, L2, "Empresa eliminada correctamente.");
                     return (0, true);
                 }
-                catch (Exception exInner)
+                catch (Exception A6)
                 {
-                    transaction.Rollback();
-                    LogHelper.GuardarLogTransaccion(logTransaccionId, nombreArchivo, "Rollback DeleteEmpresa()", $"Error interno: {exInner.Message}");
+                    A4.Rollback();
+                    LogHelper.GuardarLogTransaccion(A1, nombreArchivo, "Rollback X3()", $"Error interno: {A6.Message}");
                     return (0, false);
                 }
             }
-            catch (Exception ex)
+            catch (Exception A7)
             {
-                LogHelper.GuardarLogTransaccion(logTransaccionId, nombreArchivo, "Error de conexión DeleteEmpresa()", $"Error externo: {ex.Message}");
+                LogHelper.GuardarLogTransaccion(A1, nombreArchivo, "Error de conexión X3()", $"Error externo: {A7.Message}");
                 return (0, false);
             }
         }
-
     }
 }
