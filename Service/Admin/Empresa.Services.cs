@@ -29,7 +29,7 @@ namespace ApiMensajeria
             }
 
             responseListaMensajes.status = "000";
-            responseListaMensajes.message = "Mensajes encontrados correctamente";
+            responseListaMensajes.message = "Se guardó correctamente la empresa.";
             responseListaMensajes.data = null;
             return responseListaMensajes;
         }
