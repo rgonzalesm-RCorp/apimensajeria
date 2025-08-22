@@ -77,5 +77,48 @@ namespace ApiMensajeria.Controllers
             });
         }
         
+        [HttpPost("guardar/texto/predeterminado")]
+        public async Task<ActionResult> GuardarTextoPredeterminado(Request_TextoPredeterminado request)
+        {
+            TextoPredeterminadoService textoPredeterminadoService = new();
+            long logTransaccionId = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+            ResponseTextoPredeterminado responseTextoPredeterminado = textoPredeterminadoService.GuardarTextoPredeterminadoService(logTransaccionId.ToString(), request);
+            return Ok(new
+            {
+                status = responseTextoPredeterminado.status,
+                message = responseTextoPredeterminado.message,
+                data = responseTextoPredeterminado.data,
+            });
+        }
+        [HttpGet("list/texto/predeterminado")]
+        public async Task<ActionResult> GetListaTextoPredeterminado(string codigoEmpresaCC)
+        {
+            try
+            {
+                TextoPredeterminadoService textoPredeterminadoService = new();
+                long logTransaccionId = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+                var (listaTextoPredeterminado, response) = textoPredeterminadoService.GetListaTextoPredeterminadoService(logTransaccionId.ToString(), codigoEmpresaCC);
+                return Ok(new
+                {
+                    status = response ? "000" : "999",
+                    message = response ? "Lista de textos predeterminados obtenida correctamente." : "Error al obtener la lista de textos predeterminados.",
+                    data = listaTextoPredeterminado,
+                });
+            }
+            catch (Exception ex)
+            {
+                return Ok(new
+                {
+                    status = "999",
+                    message = $"Error al procesar la solicitud: {ex.Message}",
+                    data = new List<Lista_TextoPredeterminado>() 
+                });
+            }
+
+
+
+            
+
+        }
     }
 }
