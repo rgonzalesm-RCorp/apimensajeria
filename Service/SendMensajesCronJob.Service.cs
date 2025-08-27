@@ -9,7 +9,7 @@ namespace ApiMensajeria
         private const string NOMBREARCHIVO = "SendMensajesCronJob.Service.cs";
         public async Task<bool> SendMsgCronJob(string logTransaccionId)
         {
-            LogHelper.GuardarLogTransaccion(logTransaccionId, NOMBREARCHIVO, "Inicio del Metodo SendMsgCronJob", $"objBody ");
+            LogHelper.GuardarLogTransaccion(logTransaccionId, NOMBREARCHIVO, "Inicio del Metodo SendMsgCronJob", $"");
 
             var smsData = new SmsData();
             var saveDocumentoFisico = new SaveDocumentoFisico();
@@ -70,6 +70,8 @@ namespace ApiMensajeria
 
                 await smsData.UpdateDestinatarioData(logTransaccionId, mensaje.DestinatarioId, message, rawResponse, cobrar);
             }
+            LogHelper.GuardarLogTransaccion(logTransaccionId, NOMBREARCHIVO, "Fin del Metodo SendMsgCronJob", $"");
+
             return true;
         }
         private async Task<List<ParamsBodyRequest>> ConstruirParametrosAsync(MensajeDto mensaje, SaveDocumentoFisico saveDocumentoFisico, string logTransaccionId)

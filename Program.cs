@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.OpenApi.Models;
-
+using Quartz;
 bool production = bool.Parse(AppSettings.GetSetting("production"));
 string routePrefix = AppSettings.GetSetting("ruotePrefix");
 
@@ -15,6 +15,18 @@ builder.Services.AddCors(options =>
              .AllowAnyHeader();
   });
 });
+//Job
+builder.Services.AddQuartz(q =>
+{
+    q.UseMicrosoftDependencyInjectionJobFactory();
+    ConfiguracionCronJob.RegistrarTrabajo<WorkerSendSms>(
+        quartzConfigurator: q,
+        jobKey: "WorkerSendSms",
+        triggerKey: "WorkerSendSms-trigger",
+        cronExpression: AppSettings.GetSetting("tiempojob:envioSms") // Ejecutar cada minuto
+    );
+});
+builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
 
 // Configurar la autenticación
 builder.Services.AddAuthentication("BasicAuthentication")
@@ -57,7 +69,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddHostedService<WorkerService>();
+//builder.Services.AddHostedService<WorkerService>();
 
 
 var app = builder.Build();

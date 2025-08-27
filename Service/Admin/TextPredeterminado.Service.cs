@@ -8,7 +8,7 @@ namespace ApiMensajeria
     public class TextoPredeterminadoService
     {
         private const string NOMBREARCHIVO = "TextoPredeterminado.Service.cs";
-        public ResponseTextoPredeterminado GuardarTextoPredeterminadoService(string logTransaccionId, Request_TextoPredeterminado request)
+        public ResponseTextoPredeterminado GuardarTextoPredeterminadoService(string logTransaccionId, Request_TextoPredeterminado_Save request)
         {
             var textoPredeterminadoDat = new TextoPredeterminadoData();
             ResponseTextoPredeterminado responseTextoPredeterminado = new ResponseTextoPredeterminado
@@ -50,10 +50,34 @@ namespace ApiMensajeria
             responseTextoPredeterminado.data = null;
             return responseTextoPredeterminado;
         }
+        public ResponseTextoPredeterminado UpdateTextoPredeterminadoService(string logTransaccionId, Request_TextoPredeterminado_Update request)
+        {
+            var textoPredeterminadoDat = new TextoPredeterminadoData();
+            ResponseTextoPredeterminado responseTextoPredeterminado = new ResponseTextoPredeterminado
+            {
+                status = "999",
+                message = "Hay errores",
+                data = null
+            };
 
-       public (List<Lista_TextoPredeterminado>, bool) GetListaTextoPredeterminadoService(string logTransaccionId, string codigoEmpresaCC)
-       {
-           var textoPredeterminadoDat = new TextoPredeterminadoData();
+            LogHelper.GuardarLogTransaccion(logTransaccionId, NOMBREARCHIVO, "Inicio del Metodo UpdateTextoPredeterminadoService", $"request: {JsonConvert.SerializeObject(request)}");
+
+            bool responseAbm = textoPredeterminadoDat.UpdateTextPredeterminadoData(logTransaccionId, request);
+            if (!responseAbm)
+            {
+                LogHelper.GuardarLogTransaccion(logTransaccionId, NOMBREARCHIVO, "Fin del Metodo UpdateTextoPredeterminadoService", $"Error al actualizar el texto predeterminado");
+                return responseTextoPredeterminado;
+            }
+
+            responseTextoPredeterminado.status = "000";
+            responseTextoPredeterminado.message = "Se actualizó correctamente el texto predeterminado.";
+            responseTextoPredeterminado.data = null;
+            return responseTextoPredeterminado;
+        }
+
+        public (List<Lista_TextoPredeterminado>, bool) GetListaTextoPredeterminadoService(string logTransaccionId, string codigoEmpresaCC)
+        {
+            var textoPredeterminadoDat = new TextoPredeterminadoData();
             InstanciaData instanciaData = new InstanciaData();
 
             InstanciaxEmpresa instancia = instanciaData.GetInstanciaDataXEmpresaCC(logTransaccionId, codigoEmpresaCC);
@@ -61,7 +85,8 @@ namespace ApiMensajeria
             {
                 LogHelper.GuardarLogTransaccion(logTransaccionId, NOMBREARCHIVO, "Fin del Metodo GuardarTextoPredeterminadoService", $"Error al obtener la instancia");
                 return (new List<Lista_TextoPredeterminado>(), false);
-            }else
+            }
+            else
             {
                 if (instancia.EmpresaId == null || instancia.EmpresaId == 0)
                 {
@@ -70,6 +95,11 @@ namespace ApiMensajeria
                 }
             }
             return (textoPredeterminadoDat.GetListaTextoPredeterminado(logTransaccionId, instancia.EmpresaId), true);
-       }
+        }
+        public bool DeleteTextoPredeterminadoService(string logTransaccionId, int textoPredeterminadoId)
+        {
+            var textoPredeterminadoDat = new TextoPredeterminadoData();
+            return textoPredeterminadoDat.DeleteTextoPredeterminado(logTransaccionId, textoPredeterminadoId);
+        }
     }
 }

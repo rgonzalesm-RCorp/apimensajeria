@@ -7,10 +7,15 @@ public class Lista_TextoPredeterminado
     public bool? Estado { get; set; }
     public int? CodigoUsuario { get; set; }
 }
-public class Request_TextoPredeterminado
+public class Request_TextoPredeterminado_Save
+{
+    public string? CodigoEmpresaCC { get; set; }
+    public string? Texto { get; set; }
+    public int? CodigoUsuario { get; set; }
+}
+public class Request_TextoPredeterminado_Update
 {
     public int? TextoPredeterminadoId { get; set; }
-    public string? CodigoEmpresaCC { get; set; }
     public string? Texto { get; set; }
     public int? CodigoUsuario { get; set; }
 }
