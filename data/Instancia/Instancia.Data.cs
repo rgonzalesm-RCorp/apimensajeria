@@ -235,5 +235,27 @@ namespace ApiMensajeria
             }
             return response;
         }
+        public (string instanceU, string token) GetInstanciaTokenData(string logTransaccionId, string codigoEmpresaCC)
+        {
+            (string instanceU, string token) response = ("", "");
+            LogHelper.GuardarLogTransaccion(logTransaccionId, nombreArchivo, "Inicio metodo: GetInstanciaTokenData()", $"empresaId: {codigoEmpresaCC}");
+            try
+            {
+                string query = $@"SELECT i.InstanceIdUltraMsg, i.Token  FROM USUARIO U
+                        INNER JOIN INSTANCIA I ON I.InstanciaId= U.InstanciaId
+                        INNER JOIN EMPRESA E ON E.EmpresaId = U.EmpresaId
+                        WHERE E.CodigoCC = '{codigoEmpresaCC}' AND U.Estado = 1 AND I.Estado = 1 AND E.Estado = 1";
+                using (var context = new SqlConnection(cnx))
+                {
+                    response = context.QueryFirstOrDefault<(string InstanceIdUltraMsg, string Token)>(query);
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.GuardarLogTransaccion(logTransaccionId, nombreArchivo, "Fin metodo: GetInstanciaTokenData()", $"error: {ex.Message}");
+                response = ("", "");
+            }
+            return response;
+        }
     }
 }
