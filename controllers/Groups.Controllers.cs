@@ -11,7 +11,6 @@ namespace ApiMensajeria.Controllers
         [HttpPost("get/groups")]
         public async Task<ActionResult> GetGroupsControllers(string codigoEmpresaCC)
         {
-            TextoPredeterminadoService textoPredeterminadoService = new();
             long logTransaccionId = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
             GroupsService groupsService = new();
             (List<WhatsAppGroup> lista, string mensaje, bool status) = await groupsService.GetGroupsService(logTransaccionId.ToString(), codigoEmpresaCC);

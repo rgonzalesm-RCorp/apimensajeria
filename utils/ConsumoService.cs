@@ -10,7 +10,7 @@ public class ApiService
 { 
     public async Task<string> HttpUltraMsg(string ruta, Method http, string instanceId, string token, List<ParamsBodyRequest> objBody)
     {
-        string path = "https://api.ultramsg.com/";
+        string path = AppSettings.GetSetting("pathUltramsg");  //"https://api.ultramsg.com/";
         string url = $"{path}{instanceId}/{ruta}";
         var client = new RestClient(url);
 
