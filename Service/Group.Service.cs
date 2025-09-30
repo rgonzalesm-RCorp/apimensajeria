@@ -13,7 +13,7 @@ namespace ApiMensajeria
             try
             {
                 var apiService = new ApiService();
-                InstanciaData  instanciaData = new InstanciaData();
+                InstanciaData instanciaData = new InstanciaData();
                 (string instanceId, string token) = instanciaData.GetInstanciaTokenData(logTransaccionId, codigoEmpresaCC);
                 Console.WriteLine($"InstanceId: {instanceId}, Token: {token}");
                 if (string.IsNullOrEmpty(instanceId) || string.IsNullOrEmpty(token))
@@ -33,7 +33,20 @@ namespace ApiMensajeria
                     LogHelper.GuardarLogTransaccion(logTransaccionId, NOMBREARCHIVO, "Respuesta vacía de la API", $"Empty response from API for company code: {codigoEmpresaCC}");
                     return (new List<WhatsAppGroup>(), "Respuesta vacía de la API", false);
                 }
-                List<WhatsAppGroup> groups = JsonConvert.DeserializeObject<List<WhatsAppGroup>>(rawResponse);
+                List<WhatsAppGroup> groups = new List<WhatsAppGroup>();
+                try
+                {
+                    groups = JsonConvert.DeserializeObject<List<WhatsAppGroup>>(rawResponse);
+                }
+                catch (Exception ex)
+                {
+                    ErrorResponse errorResponse = new ErrorResponse();
+                    errorResponse = JsonConvert.DeserializeObject<ErrorResponse>(rawResponse);
+
+                    LogHelper.GuardarLogTransaccion(logTransaccionId, NOMBREARCHIVO, "Error al deserializar la respuesta", ex.Message);
+                    return (new List<WhatsAppGroup>(), $"Error de la API: {errorResponse.Error}", false);
+                }
+                
                 if (groups == null)
                 {
                     LogHelper.GuardarLogTransaccion(logTransaccionId, NOMBREARCHIVO, "Error al deserializar la respuesta", $"Response could not be deserialized for company code: {codigoEmpresaCC}");
@@ -51,5 +64,9 @@ namespace ApiMensajeria
             }
 
         }
+    }
+    public class ErrorResponse
+    {
+        public string Error { get; set; }
     }
 }
