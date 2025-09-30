@@ -15,7 +15,6 @@ builder.Services.AddCors(options =>
              .AllowAnyHeader();
   });
 });
-//Job
 builder.Services.AddQuartz(q =>
 {
     q.UseMicrosoftDependencyInjectionJobFactory();
@@ -28,7 +27,6 @@ builder.Services.AddQuartz(q =>
 });
 builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
 
-// Configurar la autenticación
 builder.Services.AddAuthentication("BasicAuthentication")
     .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);
 
@@ -37,8 +35,6 @@ builder.Services.AddAuthorization();
 builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo { Title = "API V1", Version = "v1" });
-
-    // Definir esquema de seguridad Basic
     options.AddSecurityDefinition("basic", new OpenApiSecurityScheme
     {
         Name = "Authorization",
@@ -47,8 +43,6 @@ builder.Services.AddSwaggerGen(options =>
         In = ParameterLocation.Header,
         Description = "Ingrese su nombre de usuario y contraseña para autenticarse"
     });
-
-    // Aplicar esquema a todos los endpoints (opcional: puedes aplicarlo a uno si quieres)
     options.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
@@ -69,17 +63,12 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-//builder.Services.AddHostedService<WorkerService>();
-
-
 var app = builder.Build();
 
-// Habilitar CORS con la política "AllowAll"
 app.UseCors("AllowAll");
 
 app.UseHttpsRedirection();
 
-// Excluir Swagger de la autenticación
 app.UseSwagger();
 
 app.UseSwaggerUI(c =>
@@ -88,11 +77,9 @@ app.UseSwaggerUI(c =>
   c.RoutePrefix = "swagger"; // Ruta de Swagger
 });
 
-// Configura la autenticación y autorización para todo el pipeline
 app.UseAuthentication();
 app.UseAuthorization();
 
-// Mapear controladores
 app.MapControllers();
 
 app.Run();
