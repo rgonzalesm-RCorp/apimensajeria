@@ -20,7 +20,6 @@ public class WhatsAppApi
         request.AddParameter("to", "+59170972055");
         request.AddParameter("body", Body);
 
-
         RestResponse response = await client.ExecuteAsync(request);
         var output = response.Content;
         Console.WriteLine(output);
